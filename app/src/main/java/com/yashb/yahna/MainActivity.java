@@ -6,18 +6,31 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private ListView listView;
+    private ArticleAdapter articleAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] articleNames = {"Article 1", "Article 2", "Article 3", "Article 4"};
+        listView = findViewById(R.id.home_listview);
 
-        ArrayAdapter articleNameAdapter = new ArrayAdapter<>(this, R.layout.home_listview_item, articleNames);
+        ArrayList<Article> articleList = new ArrayList<>();
+        articleList.add(new Article("Apple devices hacked", "google.com", "Tim Apple", "56 points"));
+        articleList.add(new Article("Dorian may turn into a Cat 5", "weather.com", "Dorian Grey", "78 points"));
+        articleList.add(new Article("Oneplus music festival", "oneplus.com", "Rob Adams", "123 points"));
+        articleList.add(new Article("UF suspends classes on tuesday", "ufl.edu", "UF", "536 points"));
+        articleList.add(new Article("CamScanner has malware", "technews.com", "Mal Ware", "30 points"));
+        articleList.add(new Article("Don't use Java", "oracle.com", "Sedgewick", "91 points"));
 
-        ListView listView = (ListView) findViewById(R.id.home_listview);
-        listView.setAdapter(articleNameAdapter);
+        articleAdapter = new ArticleAdapter(this, articleList);
+
+        listView.setAdapter(articleAdapter);
+
     }
 }
