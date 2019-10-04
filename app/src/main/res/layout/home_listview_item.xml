@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="(crapple.com)" />
+            android:text="(example.com)" />
     </LinearLayout>
 
     <LinearLayout

@@ -1,17 +1,20 @@
 package com.yashb.yahna;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TOP_ARTICLE_IDS_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
     private ListView listView;
-    private ArticleAdapter articleAdapter;
+    private ArticleAdapter mAdapter;
+    private String[] topArticleIds;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,9 +31,33 @@ public class MainActivity extends AppCompatActivity {
         articleList.add(new Article("CamScanner has malware", "technews.com", "Mal Ware", "30 points"));
         articleList.add(new Article("Don't use Java", "oracle.com", "Sedgewick", "91 points"));
 
-        articleAdapter = new ArticleAdapter(this, articleList);
+        mAdapter = new ArticleAdapter(this, articleList);
+        listView.setAdapter(mAdapter);
 
-        listView.setAdapter(articleAdapter);
+        TopArticleIdsAsyncTask task = new TopArticleIdsAsyncTask();
+        task.execute(TOP_ARTICLE_IDS_URL);
 
     }
+
+    private class TopArticleIdsAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
+
+            String result = QueryUtils.getTopIDs(urls[0]);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (s != null) {
+                s = s.substring(1, s.length() - 1);
+                topArticleIds = s.split(",");
+            }
+        }
+    }
+
 }

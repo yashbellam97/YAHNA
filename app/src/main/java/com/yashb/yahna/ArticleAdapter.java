@@ -27,7 +27,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View listItem = convertView;
-        if(listItem == null) {
+        if (listItem == null) {
             listItem = LayoutInflater.from(mContext).inflate(R.layout.home_listview_item, parent, false);
         }
 
