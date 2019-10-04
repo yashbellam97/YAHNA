@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,9 +16,9 @@ import androidx.annotation.Nullable;
 public class ArticleAdapter extends ArrayAdapter<Article> {
 
     private Context mContext;
-    private ArrayList<Article> articleList;
+    private List<Article> articleList;
 
-    public ArticleAdapter(@NonNull Context context, ArrayList<Article> list) {
+    public ArticleAdapter(@NonNull Context context, List<Article> list) {
         super(context, 0, list);
         mContext = context;
         articleList = list;

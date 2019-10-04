@@ -2,6 +2,9 @@ package com.yashb.yahna;
 
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +12,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -21,7 +26,6 @@ public final class QueryUtils {
 
     public static String getTopIDs(String topIdsUrlString) {
         URL topIdsUrl = createUrl(topIdsUrlString);
-
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpsRequest(topIdsUrl);
@@ -29,6 +33,54 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Problem making HTTPS request", e);
         }
         return jsonResponse;
+    }
+
+    public static List<Article> getArticles(String[] articleIds) {
+        List<Article> articles = new ArrayList<>();
+        for (String id : articleIds) {
+            String url = "https://hacker-news.firebaseio.com/v0/item/" + id + ".json";
+            Article article = fetchArticle(url);
+            if(article != null) {
+                articles.add(article);
+            }
+        }
+        return articles;
+    }
+
+    public static Article fetchArticle(String articleUrlString) {
+        URL articleUrl = createUrl(articleUrlString);
+        String jsonResponse = null;
+
+        try {
+            jsonResponse = makeHttpsRequest(articleUrl);
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "Problem making HTTPS request", e);
+        }
+
+        JSONObject jsonObject = null;
+
+        try {
+            jsonObject = new JSONObject(jsonResponse);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Unable to create JSON object", e);
+        }
+
+        return extractArticleFeatures(jsonObject);
+    }
+
+    private static Article extractArticleFeatures(JSONObject jsonObject) {
+        Article article = null;
+        try {
+            String title = jsonObject.getString("title");
+            String source = jsonObject.getString("url");
+            String author = jsonObject.getString("by");
+            String points = jsonObject.getString("score");
+
+            article = new Article(title, source, author, points);
+        } catch (JSONException e) {
+            Log.e(LOG_TAG, "Unable to parse JSON", e);
+        }
+        return article;
     }
 
     private static URL createUrl(String urlString) {

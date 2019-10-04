@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
             if (urls.length < 1 || urls[0] == null) {
                 return null;
             }
-
-            String result = QueryUtils.getTopIDs(urls[0]);
-            return result;
+            return QueryUtils.getTopIDs(urls[0]);
         }
 
         @Override
@@ -56,6 +55,27 @@ public class MainActivity extends AppCompatActivity {
             if (s != null) {
                 s = s.substring(1, s.length() - 1);
                 topArticleIds = s.split(",");
+            }
+            ArticleAsyncTask articleTask = new ArticleAsyncTask();
+            articleTask.execute();
+        }
+    }
+
+    private class ArticleAsyncTask extends AsyncTask<Void, Void, List<Article>> {
+        @Override
+        protected List<Article> doInBackground(Void... params) {
+
+            if (topArticleIds.length < 1 || topArticleIds[0] == null) {
+                return null;
+            }
+            return QueryUtils.getArticles(topArticleIds);
+        }
+
+        @Override
+        protected void onPostExecute(List<Article> articlesList) {
+            if (articlesList != null) {
+                mAdapter = new ArticleAdapter(getApplicationContext(), articlesList);
+                listView.setAdapter(mAdapter);
             }
         }
     }
