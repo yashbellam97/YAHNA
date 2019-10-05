@@ -1,8 +1,13 @@
 package com.yashb.yahna;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,20 @@ public class MainActivity extends AppCompatActivity {
 
         mAdapter = new ArticleAdapter(this, articleList);
         listView.setAdapter(mAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Article article = mAdapter.getItem(i);
+                if (article != null) {
+                    String articleUrl = "https://" + article.getmSource();
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleUrl));
+                    startActivity(browserIntent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unable to fetch URL", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         TopArticleIdsAsyncTask task = new TopArticleIdsAsyncTask();
         task.execute(TOP_ARTICLE_IDS_URL);
