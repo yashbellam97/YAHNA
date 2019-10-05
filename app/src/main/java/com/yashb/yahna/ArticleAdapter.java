@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,13 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         articleTitle.setText(currentArticle.getmTitle());
 
         TextView source = (TextView) listItem.findViewById(R.id.source);
-        source.setText(currentArticle.getmSource());
+        String sourceUrl = currentArticle.getmSource();
+        String[] urlArray = sourceUrl.split("/+");
+        if(urlArray.length > 1) {
+            sourceUrl = urlArray[1];
+        }
+        sourceUrl = sourceUrl.replace("www.", "");
+        source.setText(sourceUrl);
 
         TextView points = (TextView) listItem.findViewById(R.id.points);
         points.setText(currentArticle.getmPoints());

@@ -45,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Article article = mAdapter.getItem(i);
                 if (article != null) {
-                    String articleUrl = "https://" + article.getmSource();
+                    String articleUrl = article.getmSource();
+                    if(!articleUrl.startsWith("http://") && !articleUrl.startsWith("https://")){
+                        articleUrl = "http://" + articleUrl;
+                    }
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleUrl));
                     startActivity(browserIntent);
                 } else {

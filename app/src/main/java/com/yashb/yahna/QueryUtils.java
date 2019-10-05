@@ -73,9 +73,6 @@ public final class QueryUtils {
         try {
             String title = jsonObject.getString("title");
             String source = jsonObject.getString("url");
-            String[] urlArray = source.split("/+");
-            source = urlArray[1].replace("www.", "");
-
             String author = jsonObject.getString("by");
             String points = jsonObject.getString("score");
 
