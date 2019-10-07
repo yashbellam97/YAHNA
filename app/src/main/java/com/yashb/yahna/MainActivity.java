@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOP_ARTICLE_IDS_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
     private ListView listView;
     private ArticleAdapter mAdapter;
+    private ProgressBar homeProgressBar;
     private String[] topArticleIds;
 
 
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         listView = findViewById(R.id.home_listview);
+        homeProgressBar = findViewById(R.id.home_progressbar);
 
         ArrayList<Article> articleList = new ArrayList<>();
         articleList.add(new Article("Apple devices hacked", "google.com", "Tim Apple", "56 points"));
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 Article article = mAdapter.getItem(i);
                 if (article != null) {
                     String articleUrl = article.getmSource();
-                    if(!articleUrl.startsWith("http://") && !articleUrl.startsWith("https://")){
+                    if (!articleUrl.startsWith("http://") && !articleUrl.startsWith("https://")) {
                         articleUrl = "http://" + articleUrl;
                     }
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(articleUrl));
@@ -98,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
             if (articlesList != null) {
                 mAdapter = new ArticleAdapter(getApplicationContext(), articlesList);
                 listView.setAdapter(mAdapter);
+                homeProgressBar.setVisibility(View.GONE);
+                listView.setVisibility(View.VISIBLE);
             }
         }
     }
