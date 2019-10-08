@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -12,19 +13,28 @@
 
         <TextView
             android:id="@+id/article_title"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight="1"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="0.7"
+            android:ellipsize="end"
             android:gravity="start"
-            android:text="Is this real??" />
+            android:maxLines="2"
+            android:minLines="2"
+            android:textStyle="bold"
+            tools:text="Is this real??" />
 
         <TextView
             android:id="@+id/source"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="0.3"
+            android:ellipsize="end"
             android:gravity="end"
-            android:text="(example.com)" />
+            android:singleLine="true"
+            android:textStyle="italic"
+            tools:text="(example.com)" />
     </LinearLayout>
 
     <LinearLayout
@@ -37,7 +47,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
-            android:text="by Bob" />
+            android:textStyle="italic"
+            tools:text="by Bob" />
 
         <TextView
             android:id="@+id/points"
@@ -45,7 +56,8 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="44 points" />
+            android:textStyle="italic"
+            tools:text="44 points" />
 
     </LinearLayout>
 

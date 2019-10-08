@@ -48,7 +48,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         source.setText(sourceUrl);
 
         TextView points = (TextView) listItem.findViewById(R.id.points);
-        points.setText(currentArticle.getmPoints());
+        points.setText(currentArticle.getmPoints() + " points");
 
         TextView author = (TextView) listItem.findViewById(R.id.author);
         author.setText(currentArticle.getmAuthor());
