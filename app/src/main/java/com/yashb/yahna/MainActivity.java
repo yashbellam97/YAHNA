@@ -1,6 +1,8 @@
 package com.yashb.yahna;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,8 +34,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.home_listview);
+        TextView internetTextview = (TextView) findViewById(R.id.internet_textview);
         homeProgressBar = findViewById(R.id.home_progressbar);
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected()) {
+            startLoad();
+        } else {
+            internetTextview.setText("No Internet...");
+            internetTextview.setVisibility(View.VISIBLE);
+            homeProgressBar.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void startLoad() {
+
+        listView = findViewById(R.id.home_listview);
 
         ArrayList<Article> articleList = new ArrayList<>();
         articleList.add(new Article("Apple devices hacked", "google.com", "Tim Apple", "56 points"));
@@ -64,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
 
         TopArticleIdsAsyncTask task = new TopArticleIdsAsyncTask();
         task.execute(TOP_ARTICLE_IDS_URL);
-
     }
 
     private class TopArticleIdsAsyncTask extends AsyncTask<String, Void, String> {
