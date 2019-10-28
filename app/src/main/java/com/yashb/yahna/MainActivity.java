@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,13 +22,12 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TOP_ARTICLE_IDS_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
+    int start = 0;
+    int end = 20;
     private ListView listView;
     private ArticleAdapter mAdapter;
     private ProgressBar homeProgressBar;
     private String[] topArticleIds;
-    int start = 0;
-    int end = 20;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +35,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         TextView internetTextview = (TextView) findViewById(R.id.internet_textview);
+        ImageView internetImageView = (ImageView) findViewById(R.id.internet_imageview);
         homeProgressBar = findViewById(R.id.home_progressbar);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
         final NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if(networkInfo != null && networkInfo.isConnected()) {
+        if (networkInfo != null && networkInfo.isConnected()) {
             startLoad();
         } else {
             internetTextview.setText("No Internet...");
             internetTextview.setVisibility(View.VISIBLE);
+            internetImageView.setVisibility(View.VISIBLE);
             homeProgressBar.setVisibility(View.GONE);
         }
 
