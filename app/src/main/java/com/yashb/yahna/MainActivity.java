@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private ArticleAdapter mAdapter;
     private ProgressBar homeProgressBar;
     private String[] topArticleIds;
+    int start = 0;
+    int end = 20;
 
 
     @Override
@@ -82,18 +84,18 @@ public class MainActivity extends AppCompatActivity {
                 topArticleIds = s.split(",");
             }
             ArticleAsyncTask articleTask = new ArticleAsyncTask();
-            articleTask.execute();
+            articleTask.execute(start, end);
         }
     }
 
-    private class ArticleAsyncTask extends AsyncTask<Void, Void, List<Article>> {
+    private class ArticleAsyncTask extends AsyncTask<Integer, Void, List<Article>> {
         @Override
-        protected List<Article> doInBackground(Void... params) {
+        protected List<Article> doInBackground(Integer... params) {
 
             if (topArticleIds.length < 1 || topArticleIds[0] == null) {
                 return null;
             }
-            return QueryUtils.getArticles(topArticleIds);
+            return QueryUtils.getArticles(topArticleIds, params[0], params[1]);
         }
 
         @Override

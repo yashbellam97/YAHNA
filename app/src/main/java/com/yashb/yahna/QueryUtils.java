@@ -35,9 +35,9 @@ public final class QueryUtils {
         return jsonResponse;
     }
 
-    public static List<Article> getArticles(String[] articleIds) {
+    public static List<Article> getArticles(String[] articleIds, int start, int end) {
         List<Article> articles = new ArrayList<>();
-        for (int i = 0; i < 20; i ++) {
+        for (int i = start; i < end; i ++) {
             String url = "https://hacker-news.firebaseio.com/v0/item/" + articleIds[i] + ".json";
             Article article = fetchArticle(url);
             if(article != null) {
