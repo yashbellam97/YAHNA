@@ -37,10 +37,10 @@ public final class QueryUtils {
 
     public static List<Article> getArticles(String[] articleIds, int start, int end) {
         List<Article> articles = new ArrayList<>();
-        for (int i = start; i < end; i ++) {
+        for (int i = start; i < end; i++) {
             String url = "https://hacker-news.firebaseio.com/v0/item/" + articleIds[i] + ".json";
             Article article = fetchArticle(url);
-            if(article != null) {
+            if (article != null) {
                 articles.add(article);
             }
         }

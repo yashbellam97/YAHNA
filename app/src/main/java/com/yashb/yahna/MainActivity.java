@@ -7,9 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,14 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TOP_ARTICLE_IDS_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
     int start = 0;
     int end = 20;
-    private ListView listView;
+    private RecyclerView recyclerView;
     private ArticleAdapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
     private ProgressBar homeProgressBar;
     private String[] topArticleIds;
 
@@ -53,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void startLoad() {
 
-        listView = findViewById(R.id.home_listview);
+        recyclerView = findViewById(R.id.home_recyclerview);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
 
         ArrayList<Article> articleList = new ArrayList<>();
         articleList.add(new Article("Apple devices hacked", "google.com", "Tim Apple", "56 points"));
@@ -63,13 +67,13 @@ public class MainActivity extends AppCompatActivity {
         articleList.add(new Article("CamScanner has malware", "technews.com", "Mal Ware", "30 points"));
         articleList.add(new Article("Don't use Java", "oracle.com", "Sedgewick", "91 points"));
 
-        mAdapter = new ArticleAdapter(this, articleList);
-        listView.setAdapter(mAdapter);
+        mAdapter = new ArticleAdapter(articleList);
+        recyclerView.setAdapter(mAdapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new ArticleAdapter.ClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Article article = mAdapter.getItem(i);
+            public void onItemClick(int position, View v) {
+                Article article = mAdapter.getItem(position);
                 if (article != null) {
                     String articleUrl = article.getmSource();
                     if (!articleUrl.startsWith("http://") && !articleUrl.startsWith("https://")) {
@@ -121,10 +125,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(List<Article> articlesList) {
             if (articlesList != null) {
-                mAdapter = new ArticleAdapter(getApplicationContext(), articlesList);
-                listView.setAdapter(mAdapter);
+                mAdapter = new ArticleAdapter(articlesList);
+                recyclerView.setAdapter(mAdapter);
                 homeProgressBar.setVisibility(View.GONE);
-                listView.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.VISIBLE);
             }
         }
     }
