@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,11 +25,16 @@ public class MainActivity extends AppCompatActivity {
     private static final String TOP_ARTICLE_IDS_URL = "https://hacker-news.firebaseio.com/v0/topstories.json";
     int start = 0;
     int end = 20;
+    int pastVisiblesItems;
+    int visibleItemCount;
+    int totalItemCount;
+    boolean loading;
     private RecyclerView recyclerView;
     private ArticleAdapter mAdapter;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private ProgressBar homeProgressBar;
     private String[] topArticleIds;
+    private ArrayList<Article> articleList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +55,16 @@ public class MainActivity extends AppCompatActivity {
             internetImageView.setVisibility(View.VISIBLE);
             homeProgressBar.setVisibility(View.GONE);
         }
-
     }
 
     private void startLoad() {
-
+        loading = true;
         recyclerView = findViewById(R.id.home_recyclerview);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        ArrayList<Article> articleList = new ArrayList<>();
-        articleList.add(new Article("Apple devices hacked", "google.com", "Tim Apple", "56 points"));
-        articleList.add(new Article("Dorian may turn into a Cat 5", "weather.com", "Dorian Grey", "78 points"));
-        articleList.add(new Article("Oneplus music festival", "oneplus.com", "Rob Adams", "123 points"));
-        articleList.add(new Article("UF suspends classes on tuesday", "ufl.edu", "UF", "536 points"));
-        articleList.add(new Article("CamScanner has malware", "technews.com", "Mal Ware", "30 points"));
-        articleList.add(new Article("Don't use Java", "oracle.com", "Sedgewick", "91 points"));
-
+        articleList = new ArrayList<>();
         mAdapter = new ArticleAdapter(articleList);
         recyclerView.setAdapter(mAdapter);
 
@@ -89,6 +87,30 @@ public class MainActivity extends AppCompatActivity {
 
         TopArticleIdsAsyncTask task = new TopArticleIdsAsyncTask();
         task.execute(TOP_ARTICLE_IDS_URL);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (!loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            fetchMoreArticles(end);
+                            loading = true;
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    void fetchMoreArticles(int itemCount) {
+        ArticleAsyncTask articleTask = new ArticleAsyncTask();
+        end += 20; //Prevent redundant articles if some go missing
+        articleTask.execute(itemCount, itemCount + 20);
     }
 
     private class TopArticleIdsAsyncTask extends AsyncTask<String, Void, String> {
@@ -123,10 +145,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(List<Article> articlesList) {
-            if (articlesList != null) {
-                mAdapter = new ArticleAdapter(articlesList);
-                recyclerView.setAdapter(mAdapter);
+        protected void onPostExecute(List<Article> newArticles) {
+            if (newArticles != null) {
+                articleList.addAll(newArticles);
+                mAdapter.notifyDataSetChanged();
+                loading = false;
                 homeProgressBar.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
             }

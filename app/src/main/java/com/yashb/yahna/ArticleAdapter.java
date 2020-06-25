@@ -19,7 +19,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         articleList = list;
     }
 
-    public static void setOnItemClickListener(ClickListener clickListener) {
+    void setOnItemClickListener(ClickListener clickListener) {
         ArticleAdapter.clickListener = clickListener;
     }
 
